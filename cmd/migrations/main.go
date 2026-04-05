@@ -36,6 +36,8 @@ func main() {
 	cmd.Stdout = os.Stdout
 	cmd.Stderr = os.Stderr
 
+	cmd.Stdin = os.Stdin
+
 	// 5. Eksekusi perintah
 	if err := cmd.Run(); err != nil {
 		log.Fatalf("Migrasi gagal dijalankan: %v", err)
