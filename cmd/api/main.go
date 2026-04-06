@@ -2,6 +2,10 @@ package main
 
 import (
 	"GinGolang/internal/config"
+	"GinGolang/internal/handler"
+	"GinGolang/internal/repository"
+	"GinGolang/internal/routes"
+	"GinGolang/internal/service"
 	"log"
 	"net/http"
 	"os"
@@ -15,7 +19,14 @@ func main() {
 		log.Println("gagal me load env")
 	}
 	db := config.ConnectDB()
-	_ = db
+
+	userRepo := repository.NewUserRepository(db)
+
+	// Inject Repository ke dalam Service
+	userService := service.NewUserService(userRepo)
+
+	// Inject Service ke dalam Handler
+	userHandler := handler.NewUserHandler(userService)
 
 	router := gin.Default()
 
@@ -25,6 +36,7 @@ func main() {
 			"status":  "Server Gin berjalan dan Database siap!",
 		})
 	})
+	routes.SetupUserRoutes(router, userHandler)
 
 	port := os.Getenv("PORT")
 	if port == "" {

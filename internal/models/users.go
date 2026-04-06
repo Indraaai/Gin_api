@@ -4,6 +4,7 @@ import (
 	"time"
 
 	"github.com/google/uuid"
+	"gorm.io/gorm"
 )
 
 type User struct {
@@ -15,4 +16,13 @@ type User struct {
 	UpdatedAt time.Time `gorm:"autoUpdateTime"` // Otomatis di-update GORM saat Update
 
 	Posts []Post `gorm:"foreignKey:UserID"` // Relasi one-to-many dengan Post
+}
+
+// Pastikan import "github.com/google/uuid" dan "gorm.io/gorm" sudah ada di atas
+
+func (u *User) BeforeCreate(tx *gorm.DB) (err error) {
+	if u.ID == uuid.Nil {
+		u.ID = uuid.New() // Bikin UUID acak yang valid
+	}
+	return
 }
